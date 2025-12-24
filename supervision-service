@@ -10,7 +10,13 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 
 # RabbitMQ CloudAMQP
-spring.rabbitmq.addresses=amqps://fxouhvjv:Fyul0Gyp5jvCMQXbcRA7Ytbl1r9PXTiJ@campbell.lmq.cloudamqp.com/fxouhvjv
+spring.rabbitmq.addresses=amqps://qovqmidk:sNpj8rcI2elNxCNuVsDXAxz8h7Zzh-5m@seal.lmq.cloudamqp.com/qovqmidk
+# Configuration listener
+spring.rabbitmq.listener.type=simple
+spring.rabbitmq.listener.simple.acknowledge-mode=auto
+spring.rabbitmq.listener.simple.prefetch=10
+spring.rabbitmq.listener.simple.concurrency=5
+
 
 # Eureka Client
 eureka.client.register-with-eureka=true
