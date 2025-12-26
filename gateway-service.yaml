@@ -1,47 +1,69 @@
+# Configuration pour le service Gateway
 spring:
   application:
     name: gateway
+  
+  # IMPORTANT: Définir le type d'application comme réactive
+  main:
+    web-application-type: reactive
+  
+  # Configuration Cloud Gateway
   cloud:
     gateway:
+      # Configuration des routes manuelles
       routes:
-        # Route 1 : Agriculteur Service
+        # Route 1: Service Agriculteur
         - id: agriculteur-service
-          uri: lb://agriculteur-service
+          uri: lb://AGRICULTEUR-SERVICE
           predicates:
             - Path=/api/agriculteurs/**
-          
-        # Route 2 : Equipement Service
+          filters:
+            - StripPrefix=1
+            - name: Retry
+              args:
+                retries: 3
+                methods: GET,POST
+                series: SERVER_ERROR
+        
+        # Route 2: Service Equipement
         - id: equipement-service
-          uri: lb://equipement
+          uri: lb://EQUIPEMENT-SERVICE
           predicates:
             - Path=/api/equipements/**
-          
-        # Route 3 : Supervision Service
+          filters:
+            - StripPrefix=1
+        
+        # Route 3: Service Supervision
         - id: supervision-service
-          uri: lb://supervision-service
+          uri: lb://SUPERVISION-SERVICE
           predicates:
             - Path=/api/supervision/**
+          filters:
+            - StripPrefix=1
+        
+        # Route de test
+        - id: test-route
+          uri: http://httpbin.org:80
+          predicates:
+            - Path=/test/**
       
       # Configuration CORS
       globalcors:
-        corsConfigurations:
+        cors-configurations:
           '[/**]':
-            allowedOrigins: "*"
-            allowedMethods:
+            allowed-origins: "*"
+            allowed-methods:
               - GET
               - POST
               - PUT
               - DELETE
               - OPTIONS
-            allowedHeaders: "*"
+            allowed-headers: "*"
+            max-age: 3600
 
-# Configuration du serveur
+# Port du serveur
 server:
   port: 8888
-
-# Message de test
-config:
-  message: "Gateway Service - Configuration depuis Git"
 
 # Eureka Client
 eureka:
@@ -49,14 +71,29 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:9095/eureka
+      defaultZone: http://localhost:9095/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
 
-# Actuator
+# Actuator Configuration
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway,refresh
+        include: health,info,gateway,routes,refresh
+      base-path: /actuator
   endpoint:
     health:
       show-details: always
+    gateway:
+      enabled: true
+    routes:
+      enabled: true
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    reactor.netty: INFO
+    com.netflix.eureka: INFO
