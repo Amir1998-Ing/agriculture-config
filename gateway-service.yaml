@@ -60,5 +60,5 @@ management:
   endpoint:
     health:
       show-details: always
-    gateway: true
-    
+    gateway:
+      enabled: true
