@@ -50,15 +50,21 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:9095/eureka
+  instance:
+    prefer-ip-address: true
 
-# Actuator
+# Actuator - CONFIGURATION COMPLÈTE
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway,refresh,routes
+        include: "*"
+      base-path: /actuator
   endpoint:
     health:
       show-details: always
     gateway:
+      enabled: true
+  info:
+    env:
       enabled: true
