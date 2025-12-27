@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Ms-gateway
+    name: gateway
   cloud:
     gateway:
       routes:
