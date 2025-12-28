@@ -1,28 +1,21 @@
 spring:
   application:
-    name: new-gateway
+    name: gateway
   cloud:
     gateway:
       routes:
-        # Route 1 : Agriculteur Service
         - id: agriculteur-service
           uri: lb://agriculteur-service
           predicates:
             - Path=/api/agriculteurs/**
-          
-        # Route 2 : Equipement Service
         - id: equipement-service
-          uri: lb://equipement
+          uri: lb://equipement-service
           predicates:
             - Path=/api/equipements/**
-          
-        # Route 3 : Supervision Service
         - id: supervision-service
           uri: lb://supervision-service
           predicates:
             - Path=/api/supervision/**
-      
-      # Configuration CORS
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -35,15 +28,12 @@ spring:
               - OPTIONS
             allowedHeaders: "*"
 
-# Configuration du serveur
 server:
   port: 8888
 
-# Message de test
 config:
-  message: "Gateway Service - Configuration depuis Git"
+  message: "Gateway Service - Configuration locale"
 
-# Eureka Client
 eureka:
   client:
     register-with-eureka: true
@@ -53,7 +43,6 @@ eureka:
   instance:
     prefer-ip-address: true
 
-# Actuator - CONFIGURATION COMPLÈTE
 management:
   endpoints:
     web:
